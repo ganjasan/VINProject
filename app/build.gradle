@@ -36,4 +36,5 @@ dependencies {
     compile 'com.octo.android.robospice:robospice-retrofit:1.4.14'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
 }

@@ -1,8 +1,12 @@
 package com.inuh.vinproject.api.response;
 
-import com.inuh.vinproject.model.Source;
+import com.inuh.vinproject.spiceadapter.Source;
+import com.j256.ormlite.dao.ForeignCollection;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -10,11 +14,16 @@ import java.util.List;
  */
 public class SourceResponse {
 
+
     private int offset;
     private String nextPage;
     private int totalObjects;
 
-    private ArrayList<Source> data;
+    @DatabaseField(generatedId =  true)
+    private int id;
+
+    @ForeignCollectionField (eager = true)
+    private Collection<Source> data;
 
     public int getOffset() {
         return offset;
@@ -40,11 +49,11 @@ public class SourceResponse {
         this.totalObjects = totalObjects;
     }
 
-    public ArrayList<Source> getData() {
+    public Collection<Source> getData() {
         return data;
     }
 
-    public void setData(ArrayList<Source> data) {
+    public void setData(Collection<Source> data) {
         this.data = data;
     }
 }

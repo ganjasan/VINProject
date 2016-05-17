@@ -9,6 +9,7 @@ import com.inuh.vinproject.provider.TableContracts.TableSource;
  */
 public class Source extends Model {
 
+
     private String name;
     private String description;
     private String href;

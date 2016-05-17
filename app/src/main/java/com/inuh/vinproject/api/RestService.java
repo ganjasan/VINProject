@@ -7,6 +7,8 @@ import com.octo.android.robospice.retrofit.RetrofitGsonSpiceService;
  */
 public class RestService extends RetrofitGsonSpiceService {
 
+    public final static String PREF_SOURCE_IN_CACHE = "source_in_cache";
+
     private final static String BASE_URL = "https://api.backendless.com/";
 
     @Override
