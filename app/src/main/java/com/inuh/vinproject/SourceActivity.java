@@ -2,24 +2,23 @@ package com.inuh.vinproject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.inuh.vinproject.api.response.SourceResponse;
-import com.inuh.vinproject.spiceadapter.Source;
-import com.inuh.vinproject.api.requests.SourceRequest;
 import com.inuh.vinproject.api.RestService;
-import com.inuh.vinproject.spiceadapter.SourceService;
-import com.j256.ormlite.dao.ForeignCollection;
+import com.inuh.vinproject.api.response.SourceResponse;
+import com.inuh.vinproject.model.Source;
+import com.inuh.vinproject.api.requests.SourceRequest;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -27,17 +26,15 @@ import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.prefs.PreferencesFactory;
 
 
 public class SourceActivity extends Activity {
 
-    private Context mContext;
-
     private String TAG = this.getClass().getSimpleName();
     private long cacheExpireDuration = DurationInMillis.ONE_WEEK;
 
-    private SpiceManager mSpiceManager = new SpiceManager(SourceService.class);
+    private SpiceManager mSpiceManager = new SpiceManager(RestService.class);
 
     private RecyclerView mRecyclerView;
     private SourceAdapter mAdapter;
@@ -46,8 +43,6 @@ public class SourceActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mContext = this;
 
         requestWindowFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.activity_source);
@@ -62,16 +57,6 @@ public class SourceActivity extends Activity {
         mSpiceManager.start(this);
         super.onStart();
         mSpiceManager.execute(mSourceRequest, "Source", cacheExpireDuration, new ListSourceRequestListener());
-
-//        boolean sourceInCache = PreferenceManager.getDefaultSharedPreferences(mContext)
-//                .getBoolean(RestService.PREF_SOURCE_IN_CACHE, false);
-//
-//        if (sourceInCache){
-//            mSpiceManager.getFromCache(SourceResponse.class, "Source", cacheExpireDuration, new ListSourceRequestListener());
-//        }else {
-//            mSpiceManager.execute(mSourceRequest, "Source", cacheExpireDuration, new ListSourceRequestListener());
-//        }
-
     }
 
     @Override
@@ -90,24 +75,6 @@ public class SourceActivity extends Activity {
         @Override
         public void onRequestSuccess(SourceResponse sources) {
             Toast.makeText(SourceActivity.this, "success", Toast.LENGTH_SHORT).show();
-//            if(sources == null){
-//                PreferenceManager.getDefaultSharedPreferences(mContext).
-//                        edit()
-//                        .putBoolean(RestService.PREF_SOURCE_IN_CACHE, false)
-//                        .commit();
-//                mSpiceManager.execute(mSourceRequest, "Source", cacheExpireDuration, new ListSourceRequestListener());
-//            }else {
-//                Collection<Source> sourceList = sources.getData();
-//                mAdapter = new SourceAdapter(sourceList);
-//                mRecyclerView.setAdapter(mAdapter);
-//
-//                //объявить, что данные в кэше
-//                PreferenceManager.getDefaultSharedPreferences(mContext)
-//                        .edit()
-//                        .putBoolean(RestService.PREF_SOURCE_IN_CACHE, true)
-//                        .commit();
-//
-//            }
 
             Collection<Source> sourceList = sources.getData();
             mAdapter = new SourceAdapter(sourceList);
@@ -119,13 +86,62 @@ public class SourceActivity extends Activity {
 
     private class SourceHolder extends RecyclerView.ViewHolder {
 
-        public TextView mTitleTextView;
+        private Source mSource;
+
+        private TextView mTitleTextView;
+        private CheckBox mSelectChecbox;
+
 
         public SourceHolder(View itemView) {
             super(itemView);
-
-            mTitleTextView = (TextView) itemView;
+            mTitleTextView = (TextView) itemView.findViewById(R.id.source_name);
+            mSelectChecbox = (CheckBox) itemView.findViewById(R.id.source_select_checbox);
+            mSelectChecbox.setOnClickListener(new CheckBoxClickListener());
         }
+
+        public void bindSource(Source source){
+            mSource = source;
+            mTitleTextView.setText(source.getName());
+            mSelectChecbox.setChecked(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).
+                    getBoolean(source.getObjectId(), false));
+        }
+
+        private class CheckBoxClickListener implements View.OnClickListener{
+            @Override
+            public void onClick(View v) {
+                if (mSelectChecbox.isChecked()){
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                            .edit()
+                            .putBoolean(mSource.getObjectId(), true)
+                            .commit();
+
+                    StringBuilder builder = new StringBuilder(PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                            .getString("SelectedSources",""));
+                    builder.append(mSource.getObjectId() + ":");
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                            .edit()
+                            .putString("SelectedSources", builder.toString())
+                            .commit();
+
+                }else{
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                            .edit()
+                            .putBoolean(mSource.getObjectId(), false)
+                            .commit();
+
+                    StringBuilder builder = new StringBuilder(PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                            .getString("SelectedSources",""));
+                    int startIndex = builder.indexOf(mSource.getObjectId());
+                    builder.replace(startIndex, startIndex + 37, "");
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                            .edit()
+                            .putString("SelectedSources", builder.toString())
+                            .commit();
+                }
+
+            }
+        }
+
     }
 
     private class SourceAdapter extends RecyclerView.Adapter<SourceHolder>{
@@ -140,13 +156,13 @@ public class SourceActivity extends Activity {
         public void onBindViewHolder(SourceHolder holder, int position) {
 
             Source source = mSources.get(position);
-            holder.mTitleTextView.setText(source.getName());
+            holder.bindSource(source);
         }
 
         @Override
         public SourceHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(SourceActivity.this);
-            View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            View view = layoutInflater.inflate(R.layout.source_item_layout, parent, false);
             return new SourceHolder(view);
         }
 

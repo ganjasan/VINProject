@@ -17,7 +17,7 @@
         </activity>
 
         <service
-            android:name=".spiceadapter.SourceService"
+            android:name=".api.RestService"
             android:exported="false" />
 
         <activity

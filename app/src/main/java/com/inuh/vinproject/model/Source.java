@@ -1,31 +1,69 @@
 package com.inuh.vinproject.model;
 
-import android.content.ContentValues;
+import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
 
-import com.inuh.vinproject.provider.TableContracts.TableSource;
+import com.inuh.vinproject.api.response.SourceResponse;
+import com.j256.ormlite.field.DatabaseField;
 
-/**
- * Created by artimus on 16.05.16.
- */
-public class Source extends Model {
+public class Source {
+    @DatabaseField(columnName = BaseColumns._ID, generatedId = true)
+    private int     id;
+    @DatabaseField(columnName = "objectId")
+    private String  objectId;
+    @DatabaseField(columnName = "created")
+    private long     created;
+    @DatabaseField(columnName = "updated")
+    private long     updated;
+    @DatabaseField(columnName = "name")
+    private String  name;
+    @DatabaseField(columnName = "description")
+    private String  description;
+    @DatabaseField(columnName = "href")
+    private String  href;
 
 
-    private String name;
-    private String description;
-    private String href;
 
-    @Override
-    public ContentValues toContentValues() {
+    private boolean isSelect;
 
-        ContentValues cv = new ContentValues();
-        cv.put(TableSource._OBJECTID, objectId);
-        cv.put(TableSource._CREATED, created);
-        cv.put(TableSource._UPDATED, updated);
-        cv.put(TableSource.NAME, name);
-        cv.put(TableSource.DESCRIPTION, description);
-        cv.put(TableSource.HREF, href);
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private SourceResponse response;
 
-        return cv;
+    public Source(){
+
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
+    public long getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(long updated) {
+        this.updated = updated;
     }
 
     public String getName() {

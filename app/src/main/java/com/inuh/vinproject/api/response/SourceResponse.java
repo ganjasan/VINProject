@@ -1,26 +1,22 @@
 package com.inuh.vinproject.api.response;
 
-import com.inuh.vinproject.spiceadapter.Source;
-import com.j256.ormlite.dao.ForeignCollection;
+import com.inuh.vinproject.model.Source;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-/**
- * Created by artimus on 16.05.16.
- */
 public class SourceResponse {
-
-
-    private int offset;
-    private String nextPage;
-    private int totalObjects;
 
     @DatabaseField(generatedId =  true)
     private int id;
+
+    @DatabaseField(columnName = "offset")
+    private int offset;
+    @DatabaseField(columnName = "nextPage")
+    private String nextPage;
+    @DatabaseField(columnName = "totalObjects")
+    private int totalObjects;
 
     @ForeignCollectionField (eager = true)
     private Collection<Source> data;

@@ -4,7 +4,6 @@ import com.inuh.vinproject.api.response.SourceResponse;
 
 import retrofit.http.GET;
 import retrofit.http.Headers;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
