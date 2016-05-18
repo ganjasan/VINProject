@@ -1,5 +1,9 @@
 package com.inuh.vinproject;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -10,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +29,7 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +53,11 @@ public class CatalogFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //broadcastreceiver for PREFERENCE_CHAGE_NOTIFCATION
+        IntentFilter filter = new IntentFilter(PrefManager.PREF_CHANGE_NOTIFICATION);
+        getActivity().registerReceiver(mOnPreferenceChange, filter);
     }
+
 
     @Nullable
     @Override
@@ -66,7 +76,8 @@ public class CatalogFragment extends Fragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if(totalItemsCount < totalCount) {
-                    mSpiceManager.execute(new CatalogRequest(totalItemsCount, mWhereClause), "Novels", DurationInMillis.ONE_DAY, new NovelRequestListener());
+                    CatalogRequest request = new CatalogRequest(totalItemsCount, mWhereClause);
+                    mSpiceManager.execute(request, request.hashCode(), DurationInMillis.ONE_DAY, new NovelRequestListener());
                 }
             }
         });
@@ -79,19 +90,44 @@ public class CatalogFragment extends Fragment {
     public void onStart() {
         mSpiceManager.start(getContext());
         super.onStart();
+
         if (PrefManager.getInstance(getActivity()).getSelectedSource().length() != 0) {
             mWhereClause = getWhereClause();
-            mSpiceManager.execute(new CatalogRequest(0, mWhereClause), "Novels", DurationInMillis.ONE_DAY, new NovelRequestListener());
+            if(mNovelList.size() == 0) {
+                CatalogRequest request = new CatalogRequest(0, mWhereClause);
+                mSpiceManager.execute(request, request.hashCode(), DurationInMillis.ONE_DAY, new NovelRequestListener());
+            }
         }else{
+
             Toast.makeText(getActivity(), "no selected sources", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onStop() {
-        mSpiceManager.shouldStop();
         super.onStop();
+        mSpiceManager.shouldStop();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(mOnPreferenceChange);
+    }
+
+    private BroadcastReceiver mOnPreferenceChange = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(mNovelList != null && mAdapter != null)
+                mNovelList.clear();
+                mAdapter.notifyDataSetChanged();
+            mWhereClause = getWhereClause();
+        }
+    };
+
+
+
+
 
     public final class NovelRequestListener implements RequestListener<NovelResponse>{
 
@@ -112,17 +148,24 @@ public class CatalogFragment extends Fragment {
 
     private class NovelHolder extends RecyclerView.ViewHolder{
 
-        private Novel mNovel;
-        private TextView mNameTextView;
+        private Novel       mNovel;
+        private TextView    mNameTextView;
+        private ImageView   mImageView;
 
         public NovelHolder(View itemView){
             super(itemView);
             mNameTextView = (TextView)itemView.findViewById(R.id.novel_name);
+            mImageView = (ImageView)itemView.findViewById(R.id.novel_image);
+
         }
 
         public void bindHolder(Novel novel){
             mNovel = novel;
             mNameTextView.setText(novel.getName());
+            Picasso.with(getActivity())
+                    .load(novel.getImgHref())
+                    .placeholder(android.R.drawable.ic_dialog_info)
+                    .into(mImageView);
         }
 
     }
@@ -155,6 +198,7 @@ public class CatalogFragment extends Fragment {
 
 
     private String getWhereClause(){
+
         String whereSourceInClause = "Sources[novels].objectId in (" + PrefManager.getInstance(getContext()).getSelectedSource() + ")";
 
         String whereClause = whereSourceInClause;

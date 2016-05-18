@@ -1,6 +1,8 @@
 package com.inuh.vinproject;
 
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.*;
 import android.preference.PreferenceManager;
@@ -12,14 +14,16 @@ import com.inuh.vinproject.model.Source;
  */
 public class PrefManager {
 
-    private final static String PREF_SELECTED_SOURCE = "SelectedSources";
+
+    public final static String PREF_CHANGE_NOTIFICATION = "PrefChangeNotification";
+    public final static String PREF_SELECTED_SOURCE = "SelectedSources";
 
     private static PrefManager sInstance;
 
     private Context mContext;
 
     public static PrefManager getInstance(Context context) {
-        if(sInstance == null){
+        if(sInstance == null) {
             sInstance = new PrefManager(context);
         }
 
@@ -67,6 +71,8 @@ public class PrefManager {
                     .commit();
 
         }
+
+        mContext.sendBroadcast(new Intent(PREF_CHANGE_NOTIFICATION));
     }
 
     public String getSelectedSource(){

@@ -12,13 +12,24 @@ public class CatalogRequest extends RetrofitSpiceRequest<NovelResponse, VinRest>
 
     private int mOffset;
     private String mWhereParam;
-    private int mPageSize = 10;
+    private int mPageSize = 50;
 
     public CatalogRequest(int offset, String whereParam){
         super(NovelResponse.class, VinRest.class);
         mOffset = offset;
         mWhereParam = whereParam;
 
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + mOffset;
+        result = prime * result + mPageSize;
+        result = prime * result + mWhereParam.hashCode();
+
+        return result;
     }
 
     @Override
