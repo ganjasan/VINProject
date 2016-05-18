@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ import java.util.Collection;
 import java.util.prefs.PreferencesFactory;
 
 
-public class SourceActivity extends Activity {
+public class SourceActivity extends AppCompatActivity {
 
     private String TAG = this.getClass().getSimpleName();
     private long cacheExpireDuration = DurationInMillis.ONE_WEEK;
@@ -109,36 +110,7 @@ public class SourceActivity extends Activity {
         private class CheckBoxClickListener implements View.OnClickListener{
             @Override
             public void onClick(View v) {
-                if (mSelectChecbox.isChecked()){
-                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                            .edit()
-                            .putBoolean(mSource.getObjectId(), true)
-                            .commit();
-
-                    StringBuilder builder = new StringBuilder(PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                            .getString("SelectedSources",""));
-                    builder.append(mSource.getObjectId() + ":");
-                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                            .edit()
-                            .putString("SelectedSources", builder.toString())
-                            .commit();
-
-                }else{
-                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                            .edit()
-                            .putBoolean(mSource.getObjectId(), false)
-                            .commit();
-
-                    StringBuilder builder = new StringBuilder(PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                            .getString("SelectedSources",""));
-                    int startIndex = builder.indexOf(mSource.getObjectId());
-                    builder.replace(startIndex, startIndex + 37, "");
-                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                            .edit()
-                            .putString("SelectedSources", builder.toString())
-                            .commit();
-                }
-
+                PrefManager.getInstance(getApplicationContext()).setSourceSelected(mSource, mSelectChecbox.isChecked());
             }
         }
 

@@ -19,12 +19,6 @@ public class Source {
     private String  name;
     @DatabaseField(columnName = "description")
     private String  description;
-    @DatabaseField(columnName = "href")
-    private String  href;
-
-
-
-    private boolean isSelect;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private SourceResponse response;
@@ -82,11 +76,4 @@ public class Source {
         this.description = description;
     }
 
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
-    }
 }

@@ -2,7 +2,9 @@ package com.inuh.vinproject.api;
 
 import android.app.Application;
 
+import com.inuh.vinproject.api.response.NovelResponse;
 import com.inuh.vinproject.api.response.SourceResponse;
+import com.inuh.vinproject.model.Novel;
 import com.inuh.vinproject.model.Source;
 import com.octo.android.robospice.persistence.CacheManager;
 import com.octo.android.robospice.persistence.exception.CacheCreationException;
@@ -42,7 +44,9 @@ public class RestService extends RetrofitGsonSpiceService {
         List<Class<?>> classCollection = new ArrayList<Class<?>>();
 
         classCollection.add(Source.class);
+        classCollection.add(Novel.class);
         classCollection.add(SourceResponse.class);
+        classCollection.add(NovelResponse.class);
 
         RoboSpiceDatabaseHelper databaseHelper = new RoboSpiceDatabaseHelper(application, DATABASE_NAME, DATABASE_VERSION);
         InDatabaseObjectPersisterFactory inDatabaseObjectPersisterFactory = new InDatabaseObjectPersisterFactory(application, databaseHelper, classCollection);

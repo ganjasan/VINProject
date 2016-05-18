@@ -2,7 +2,6 @@ package com.inuh.vinproject.api.requests;
 
 import android.util.Log;
 
-import com.inuh.vinproject.api.VIN;
 import com.inuh.vinproject.api.response.SourceResponse;
 import com.inuh.vinproject.api.rest.VinRest;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
