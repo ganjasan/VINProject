@@ -40,5 +40,6 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
     compile 'com.squareup.okhttp:okhttp:2.7.5'
     compile 'com.github.chrisbanes:PhotoView:1.2.6'
-    compile 'com.android.support:support-v4:24.0.0-beta1'
+    compile 'com.android.support:support-v4:23.0.0'
+
 }

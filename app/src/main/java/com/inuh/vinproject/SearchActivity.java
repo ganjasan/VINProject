@@ -22,6 +22,7 @@ import com.inuh.vinproject.api.RestService;
 import com.inuh.vinproject.api.requests.CatalogRequest;
 import com.inuh.vinproject.api.response.NovelResponse;
 import com.inuh.vinproject.model.Novel;
+import com.inuh.vinproject.util.PrefManager;
 import com.inuh.vinproject.view.EndlessRecyclerViewScrollListener;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -67,7 +68,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (totalItemsCount < totalCount) {
-                    CatalogRequest request = new CatalogRequest(totalItemsCount, getWhereClause());
+                    CatalogRequest request = new CatalogRequest(totalItemsCount, getWhereClause(), getSortClause());
                     mSpiceManager.execute(request, new NovelRequestListener());
                 }
             }
@@ -131,7 +132,7 @@ public class SearchActivity extends AppCompatActivity {
                                 public void run() {
                                     mSearchList.clear();
                                     if(!mSearchString.equals("")) {
-                                        CatalogRequest request = new CatalogRequest(0, getWhereClause());
+                                        CatalogRequest request = new CatalogRequest(0, getWhereClause(), getSortClause());
                                         mSpiceManager.execute(request, new NovelRequestListener());
                                     }
 
@@ -193,6 +194,7 @@ public class SearchActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(SearchActivity.this, ReaderActivity.class);
             intent.putExtra(ReaderActivity.EXTRA_NOVELS_OBJECTID, mNovel.getObjectId());
+            intent.putExtra(ReaderActivity.EXTRA_TOTAL_PAGE_COUNT, mNovel.getPageTotal());
             startActivity(intent);
         }
     }
@@ -229,5 +231,10 @@ public class SearchActivity extends AppCompatActivity {
 
         return whereClause;
 
+    }
+
+    private String getSortClause(){
+        String sortClause = PrefManager.getInstance(this).getSortFilter() + " asc";
+        return sortClause;
     }
 }

@@ -13,11 +13,13 @@ public class CatalogRequest extends RetrofitSpiceRequest<NovelResponse, VinRest>
     private int mOffset;
     private String mWhereParam;
     private int mPageSize = 50;
+    private String mSourtClause;
 
-    public CatalogRequest(int offset, String whereParam){
+    public CatalogRequest(int offset, String whereParam, String sortClause){
         super(NovelResponse.class, VinRest.class);
         mOffset = offset;
         mWhereParam = whereParam;
+        mSourtClause = sortClause;
 
     }
 
@@ -28,12 +30,13 @@ public class CatalogRequest extends RetrofitSpiceRequest<NovelResponse, VinRest>
         result = prime * result + mOffset;
         result = prime * result + mPageSize;
         result = prime * result + mWhereParam.hashCode();
+        result = prime * result + mSourtClause.hashCode();
 
         return result;
     }
 
     @Override
     public NovelResponse loadDataFromNetwork() throws Exception {
-        return getService().getNovels(mOffset, mPageSize, mWhereParam);
+        return getService().getNovels(mOffset, mPageSize, mWhereParam, mSourtClause);
     }
 }

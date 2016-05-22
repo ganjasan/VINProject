@@ -30,7 +30,8 @@ public interface VinRest {
     NovelResponse getNovels(
             @Query("offset") int offset,
             @Query("pageSize") int pageSize,
-            @Query("where") String whereParam
+            @Query("where") String whereParam,
+            @Query("sortBy") String sortClause
     );
 
 

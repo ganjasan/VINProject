@@ -73,12 +73,16 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_search){
-            Intent intent =  new Intent(this, SearchActivity.class);
-            startActivity(intent);
-            return true;
+        switch (id){
+            case R.id.action_search:
+                Intent seatchIntent =  new Intent(this, SearchActivity.class);
+                startActivity(seatchIntent);
+                return true;
+            case R.id.action_filter:
+                Intent filterIntent = new Intent(this, FilterActivity.class);
+                startActivity(filterIntent);
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

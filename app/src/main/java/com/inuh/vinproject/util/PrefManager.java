@@ -15,6 +15,9 @@ public class PrefManager {
     public final static String PREF_CHANGE_NOTIFICATION = "PrefChangeNotification";
     public final static String PREF_SELECTED_SOURCE = "SelectedSources";
 
+    public final static String PREF_FILTER_STATUS = "status";
+    public final static String PREF_FILTER_SORT = "sort";
+
     private static PrefManager sInstance;
 
     private Context mContext;
@@ -88,5 +91,31 @@ public class PrefManager {
 
     public int getNovelsLastPage(String novelsId){
         return PreferenceManager.getDefaultSharedPreferences(mContext).getInt(novelsId, 1);
+    }
+
+    public void setSortFilter(String filter){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putString(PREF_FILTER_SORT, filter)
+                .commit();
+
+        mContext.sendBroadcast(new Intent(PREF_CHANGE_NOTIFICATION));
+    }
+
+    public String getSortFilter(){
+        return PreferenceManager.getDefaultSharedPreferences(mContext).getString(PREF_FILTER_SORT, "name");
+    }
+
+    public void setStatusFilter(String filter){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putString(PREF_FILTER_STATUS, filter)
+                .commit();
+
+        mContext.sendBroadcast(new Intent(PREF_CHANGE_NOTIFICATION));
+    }
+
+    public String getStatusFilter(){
+        return PreferenceManager.getDefaultSharedPreferences(mContext).getString(PREF_FILTER_STATUS, "all");
     }
 }

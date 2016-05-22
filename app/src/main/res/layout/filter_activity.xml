@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:paddingLeft="4dp"
+        android:paddingTop="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/filter_stats_title"/>
+
+    <com.inuh.vinproject.layout.FlowLayout
+            android:paddingLeft="8dp"
+            android:paddingTop="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:paddingH="100"
+            app:paddingV="25">
+
+            <RadioButton
+                android:id="@+id/filter_status_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_all"/>
+
+            <RadioButton
+                android:id="@+id/filter_status_finish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_finished"/>
+            <RadioButton
+                android:id="@+id/filter_status_inprogress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_inprogress"/>
+
+    </com.inuh.vinproject.layout.FlowLayout>
+
+
+
+    <View
+        android:paddingTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:paddingLeft="4dp"
+        android:paddingTop="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/filter_sort_title"/>
+
+    <com.inuh.vinproject.layout.FlowLayout
+        android:paddingLeft="8dp"
+        android:paddingTop="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:paddingH="100"
+        app:paddingV="25">
+
+        <RadioButton
+            android:id="@+id/filter_sort_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_sort_name"/>
+
+        <RadioButton
+            android:id="@+id/filter_sort_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_sort_reting"/>
+
+
+    </com.inuh.vinproject.layout.FlowLayout>
+
+
+
+
+</LinearLayout>

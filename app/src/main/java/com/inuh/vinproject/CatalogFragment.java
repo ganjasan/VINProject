@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +44,7 @@ public class CatalogFragment extends Fragment {
     private List<Novel> mNovelList = new ArrayList<Novel>();
     private LinearLayoutManager mLinearLayoutManager;
     private String mWhereClause;
+    private String mSortClause;
 
     private int totalCount;
 
@@ -61,6 +63,10 @@ public class CatalogFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.catalog_fragment_layout, container, false);
 
+
+        mWhereClause = getWhereClause();
+        mSortClause = getSortClause();
+
         mCatalogRecyclerView = (RecyclerView)view.findViewById(R.id.catalog_list);
         mNovelList = new ArrayList<Novel>();
         mAdapter = new NovelsAdapter(mNovelList);
@@ -71,7 +77,7 @@ public class CatalogFragment extends Fragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if(totalItemsCount < totalCount) {
-                    CatalogRequest request = new CatalogRequest(totalItemsCount, mWhereClause);
+                    CatalogRequest request = new CatalogRequest(totalItemsCount, mWhereClause, mSortClause);
                     mSpiceManager.execute(request, request.hashCode(), DurationInMillis.ONE_DAY, new NovelRequestListener());
                 }
             }
@@ -89,7 +95,7 @@ public class CatalogFragment extends Fragment {
         if (PrefManager.getInstance(getActivity()).getSelectedSource().length() != 0) {
             mWhereClause = getWhereClause();
             if(mNovelList.size() == 0) {
-                CatalogRequest request = new CatalogRequest(0, mWhereClause);
+                CatalogRequest request = new CatalogRequest(0, mWhereClause, mSortClause);
                 mSpiceManager.execute(request, request.hashCode(), DurationInMillis.ONE_DAY, new NovelRequestListener());
             }
         }else{
@@ -117,6 +123,7 @@ public class CatalogFragment extends Fragment {
                 mNovelList.clear();
                 mAdapter.notifyDataSetChanged();
             mWhereClause = getWhereClause();
+            mSortClause = getSortClause();
         }
     };
 
@@ -202,12 +209,24 @@ public class CatalogFragment extends Fragment {
 
     private String getWhereClause(){
 
+        String whereClause;
+
         String whereSourceInClause = "Sources[novels].objectId in (" + PrefManager.getInstance(getContext()).getSelectedSource() + ")";
 
-        String whereClause = whereSourceInClause;
+        String status = PrefManager.getInstance(getActivity()).getStatusFilter();
+        if(!status.equals("all")) {
+            String whereStatusFilterClaus = "status='" + status +"'";
+            whereClause = whereSourceInClause + " AND " + whereStatusFilterClaus;
+        }else{
+            whereClause = whereSourceInClause;
+        }
 
         return whereClause;
+    }
 
+    private String getSortClause(){
+        String sortClause = PrefManager.getInstance(getActivity()).getSortFilter() + " asc";
+        return sortClause;
     }
 
 

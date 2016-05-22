@@ -8,4 +8,14 @@
     <string name="action_settings">Settings</string>
     <string name="search">Search</string>
     <string name="search_hint">Search</string>
+
+    <string name="filter_stats_title">Статус</string>
+    <string name="status_all">Все</string>
+    <string name="status_finished">Завершено</string>
+    <string name="status_inprogress">В процессе</string>
+
+    <string name="filter_sort_title">Cортировка</string>
+    <string name="filter_sort_name">Название</string>
+    <string name="filter_sort_reting">Рейтинг</string>
+
 </resources>
