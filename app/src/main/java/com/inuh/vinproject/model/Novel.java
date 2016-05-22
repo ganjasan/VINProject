@@ -27,7 +27,7 @@ public class Novel {
     @DatabaseField(columnName = "description")
     private String description;
     @DatabaseField(columnName = "totalPageCount")
-    private int totalPageCount;
+    private int pageTotal;
     @DatabaseField(columnName = "imgHref")
     private String imgHref;
 
@@ -87,14 +87,6 @@ public class Novel {
         this.description = description;
     }
 
-//    public String getSourceObjectId() {
-//        return sourceObjectId;
-//    }
-//
-//    public void setSourceObjectId(String sourceObjectId) {
-//        this.sourceObjectId = sourceObjectId;
-//    }
-
     public String getImgHref() {
         return imgHref;
     }
@@ -109,5 +101,13 @@ public class Novel {
 
     public void setResponse(NovelResponse response) {
         this.response = response;
+    }
+
+    public int getPageTotal() {
+        return pageTotal;
+    }
+
+    public void setPageTotal(int pageTotal) {
+        this.pageTotal = pageTotal;
     }
 }

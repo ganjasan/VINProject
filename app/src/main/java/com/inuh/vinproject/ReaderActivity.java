@@ -15,9 +15,11 @@ import com.inuh.vinproject.api.response.PageResponse;
 import com.inuh.vinproject.model.Page;
 import com.inuh.vinproject.util.OkPicasso;
 import com.inuh.vinproject.util.PrefManager;
+import com.inuh.vinproject.view.FixViewPager;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +39,7 @@ public class ReaderActivity extends AppCompatActivity {
     private static final int    OFFSCREEN_PAGE_LIMIT = 1;
     private static final int    PRELOAD_PAGE_COUNT = 15;
 
-    private ViewPager           mViewPager;
+    private FixViewPager        mViewPager;
     private SpiceManager        mSpiceManager = new SpiceManager(RestService.class);
 
     private String              mNovelsObjectId;
@@ -46,109 +48,6 @@ public class ReaderActivity extends AppCompatActivity {
     private String              mWhereClause;
     private int                 mTotalPageCount;
     private int                 mAdapterOffset;
-
-    private boolean             mFirstLoad;
-
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if(savedInstanceState != null){
-//
-//        }
-//
-//        mPageList = new ArrayList<>();
-//
-//        mNovelsObjectId = getIntent().getStringExtra(EXTRA_NOVELS_OBJECTID);
-//        mCurrentPage = PrefManager.getInstance(this).getNovelsLastPage(mNovelsObjectId);
-//
-//        mViewPager = new ViewPager(this);
-//        mViewPager.setId(R.id.view_pager);
-//        mViewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
-//        setContentView(mViewPager);
-//
-//        FragmentManager fm = getSupportFragmentManager();
-//        mViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
-//
-//            @Override
-//            public Fragment getItem(int position) {
-//                if(position!= 0 && position == mPageList.size()-5){
-//                    loadNext();
-//                }
-//                PageFragment pf = PageFragment.getInstance(mPageList.get(position));
-//                return pf;
-//            }
-//
-//            @Override
-//            public int getCount() {
-//                return mPageList.size();
-//            }
-//        });
-//
-//    }
-//
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        mSpiceManager.start(this);
-//        firstPageLoad();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        mSpiceManager.shouldStop();
-//        PrefManager.getInstance(this).setNovelsLastPage(mCurrentPage, mNovelsObjectId);
-//    }
-//
-//    private void firstPageLoad(){
-//        if (mPageList.isEmpty()){
-//            int offset = mCurrentPage==0? mCurrentPage : mCurrentPage-1;
-//            mSpiceManager.execute(new PageRequest(offset,16,getWhereClause()), new PageRequestListener());
-//        }
-//    }
-//
-//    private void loadNext(){
-//        //int offset = mPageList;
-//        mSpiceManager.execute(new PageRequest(offset,getWhereClause()), new PageRequestListener());
-//    }
-//
-//    private String getWhereClause(int firstPageNum, int pageCount){
-//
-//        String selectNovelWhereClause = "Novels[pages].objectId='" + mNovelsObjectId +"'";
-//        String pageBetweenWhereClause = "number>=" + firstPageNum + " AND number<=" + (firstPageNum+pageCount);
-//
-//        String whereClause = selectNovelWhereClause + "&" + pageBetweenWhereClause;
-//
-//        return  whereClause;
-//    }
-//
-//    private String getWhereClause(){
-//        String selectNovelWhereClause = "Novels[pages].objectId='" + mNovelsObjectId +"'";
-//
-//        return selectNovelWhereClause;
-//
-//    }
-//
-//    private class PageRequestListener implements RequestListener<PageResponse>{
-//
-//        @Override
-//        public void onRequestFailure(SpiceException spiceException) {
-//            Toast.makeText(ReaderActivity.this, "failure", Toast.LENGTH_SHORT).show();
-//        }
-//
-//        @Override
-//        public void onRequestSuccess(PageResponse pageResponse) {
-//            mPageList.addAll(pageResponse.getData());
-//            mViewPager.getAdapter().notifyDataSetChanged();
-//            imagePreCache(pageResponse.getData());
-//        }
-//    }
-//
-//    private void imagePreCache(Collection<Page> pages){
-//        for (Page page: pages) {
-//            OkPicasso.getPicassoInstance(this).load(page.getImgHref());
-//        }
-//    }
 
 
     @Override
@@ -162,7 +61,7 @@ public class ReaderActivity extends AppCompatActivity {
         mWhereClause = getWhereClause();
 
 
-        mViewPager = new ViewPager(this);
+        mViewPager = new FixViewPager(this);
         mViewPager.setId(R.id.view_pager);
 
 
@@ -217,12 +116,13 @@ public class ReaderActivity extends AppCompatActivity {
 
         @Override
         public void onRequestSuccess(PageResponse pageResponse) {
-            //mTotalPageCount = pageResponse.getTotalObjects();
+            mTotalPageCount = pageResponse.getTotalObjects();
             mPages.addAll(pageResponse.getData());
             mAdapterOffset = mPages.getFirst().getNumber();
 
             mViewPager.getAdapter().notifyDataSetChanged();
 
+            imagePreCache(pageResponse.getData());
         }
     }
 
@@ -235,9 +135,13 @@ public class ReaderActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             PageFragment pf;
-            if(mPages.isEmpty() || position < mPages.getFirst().getNumber()-1){
+            if(mPages.isEmpty() || position < mPages.getFirst().getNumber()-1 || position > mPages.getLast().getNumber()-1){
                 pf = PageFragment.getInstance(mNovelsObjectId, position);
             }else {
+                if (position == mPages.getLast().getNumber() - 6)
+                {
+                    mSpiceManager.execute(new PageRequest(mPages.getLast().getNumber(), mWhereClause),new NextPageRequestListener());
+                }
                 Page currentPage = mPages.get(position - (mAdapterOffset-1));
                 pf = PageFragment.getInstance(currentPage);
             }
@@ -251,30 +155,13 @@ public class ReaderActivity extends AppCompatActivity {
 
     }
 
-
-
-    private class PrevPageRequestListener implements RequestListener<PageResponse>{
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(ReaderActivity.this, "failure", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onRequestSuccess(PageResponse pageResponse) {
-            //mTotalPageCount = pageResponse.getTotalObjects();
-            mPages.addAll(0,pageResponse.getData());
-            mViewPager.getAdapter().notifyDataSetChanged();
-        }
-    }
-
-
-
-
-
     private void imagePreCache(Collection<Page> pages){
         for (Page page: pages) {
-            OkPicasso.getPicassoInstance(this).load(page.getImgHref());
+            String imgHref = "http://"  + page.getImgHref();
+            OkPicasso.getPicassoInstance(getApplicationContext())
+                    .load(imgHref)
+                    .priority(Picasso.Priority.LOW)
+                    .fetch();
         }
     }
 

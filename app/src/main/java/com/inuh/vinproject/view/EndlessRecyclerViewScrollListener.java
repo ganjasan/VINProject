@@ -1,4 +1,4 @@
-package com.inuh.vinproject.util;
+package com.inuh.vinproject.view;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

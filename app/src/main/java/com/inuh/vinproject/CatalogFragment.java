@@ -20,7 +20,7 @@ import com.inuh.vinproject.api.RestService;
 import com.inuh.vinproject.api.requests.CatalogRequest;
 import com.inuh.vinproject.api.response.NovelResponse;
 import com.inuh.vinproject.model.Novel;
-import com.inuh.vinproject.util.EndlessRecyclerViewScrollListener;
+import com.inuh.vinproject.view.EndlessRecyclerViewScrollListener;
 import com.inuh.vinproject.util.PrefManager;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -50,7 +50,7 @@ public class CatalogFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //broadcastreceiver for PREFERENCE_CHAGE_NOTIFCATION
+
         IntentFilter filter = new IntentFilter(PrefManager.PREF_CHANGE_NOTIFICATION);
         getActivity().registerReceiver(mOnPreferenceChange, filter);
     }
@@ -168,7 +168,7 @@ public class CatalogFragment extends Fragment {
         public void onClick(View v) {
             Intent intent = new Intent(getActivity(), ReaderActivity.class);
             intent.putExtra(ReaderActivity.EXTRA_NOVELS_OBJECTID, mNovel.getObjectId());
-            intent.putExtra(ReaderActivity.EXTRA_TOTAL_PAGE_COUNT, 50);
+            intent.putExtra(ReaderActivity.EXTRA_TOTAL_PAGE_COUNT, mNovel.getPageTotal());
             startActivity(intent);
         }
     }
