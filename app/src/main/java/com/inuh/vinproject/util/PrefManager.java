@@ -1,10 +1,7 @@
-package com.inuh.vinproject;
+package com.inuh.vinproject.util;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.*;
 import android.preference.PreferenceManager;
 
 import com.inuh.vinproject.model.Source;
@@ -80,5 +77,16 @@ public class PrefManager {
         String selectedSources = PreferenceManager.getDefaultSharedPreferences(mContext).getString("SelectedSources", "");
         return   selectedSources;
 
+    }
+
+    public void setNovelsLastPage(int number, String novelsId){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putInt(novelsId, number)
+                .commit();
+    }
+
+    public int getNovelsLastPage(String novelsId){
+        return PreferenceManager.getDefaultSharedPreferences(mContext).getInt(novelsId, 1);
     }
 }

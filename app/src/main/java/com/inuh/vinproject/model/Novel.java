@@ -26,8 +26,8 @@ public class Novel {
     private String name;
     @DatabaseField(columnName = "description")
     private String description;
-//    @DatabaseField(columnName = "sourceObjectId")
-//    private String sourceObjectId;
+    @DatabaseField(columnName = "totalPageCount")
+    private int totalPageCount;
     @DatabaseField(columnName = "imgHref")
     private String imgHref;
 
@@ -38,20 +38,6 @@ public class Novel {
 
     }
 
-    //TEST METHOD
-
-    public static List<Novel> createNovelList(int count, int offset){
-        List<Novel> novels = new ArrayList<Novel>();
-        for (int i = offset; i < offset+count; i++){
-            Novel novel = new Novel();
-            novel.setName("Novel " + i);
-            novels.add(novel);
-        }
-
-        return novels;
-    }
-
-    //END
 
     public int getId() {
         return id;

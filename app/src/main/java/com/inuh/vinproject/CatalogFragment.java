@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,10 +19,9 @@ import android.widget.Toast;
 import com.inuh.vinproject.api.RestService;
 import com.inuh.vinproject.api.requests.CatalogRequest;
 import com.inuh.vinproject.api.response.NovelResponse;
-import com.inuh.vinproject.api.response.SourceResponse;
 import com.inuh.vinproject.model.Novel;
-import com.inuh.vinproject.model.Source;
 import com.inuh.vinproject.util.EndlessRecyclerViewScrollListener;
+import com.inuh.vinproject.util.PrefManager;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -63,8 +60,6 @@ public class CatalogFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.catalog_fragment_layout, container, false);
-
-        //mWhereClause = getWhereClause();
 
         mCatalogRecyclerView = (RecyclerView)view.findViewById(R.id.catalog_list);
         mNovelList = new ArrayList<Novel>();
@@ -146,7 +141,7 @@ public class CatalogFragment extends Fragment {
         }
     }
 
-    private class NovelHolder extends RecyclerView.ViewHolder{
+    private class NovelHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private Novel       mNovel;
         private TextView    mNameTextView;
@@ -154,6 +149,7 @@ public class CatalogFragment extends Fragment {
 
         public NovelHolder(View itemView){
             super(itemView);
+            itemView.setOnClickListener(this);
             mNameTextView = (TextView)itemView.findViewById(R.id.novel_name);
             mImageView = (ImageView)itemView.findViewById(R.id.novel_image);
 
@@ -168,6 +164,13 @@ public class CatalogFragment extends Fragment {
                     .into(mImageView);
         }
 
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getActivity(), ReaderActivity.class);
+            intent.putExtra(ReaderActivity.EXTRA_NOVELS_OBJECTID, mNovel.getObjectId());
+            intent.putExtra(ReaderActivity.EXTRA_TOTAL_PAGE_COUNT, 50);
+            startActivity(intent);
+        }
     }
 
     private class NovelsAdapter extends RecyclerView.Adapter<NovelHolder>{

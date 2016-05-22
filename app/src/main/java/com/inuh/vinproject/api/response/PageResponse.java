@@ -3,6 +3,7 @@ package com.inuh.vinproject.api.response;
 import com.inuh.vinproject.model.Page;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by artimus on 16.05.16.
@@ -13,7 +14,7 @@ public class PageResponse {
     private String nextPage;
     private int totalObjects;
 
-    private ArrayList<Page> data;
+    private Collection<Page> data;
 
     public int getOffset() {
         return offset;
@@ -39,11 +40,11 @@ public class PageResponse {
         this.totalObjects = totalObjects;
     }
 
-    public ArrayList<Page> getData() {
+    public Collection<Page> getData() {
         return data;
     }
 
-    public void setData(ArrayList<Page> data) {
+    public void setData(Collection<Page> data) {
         this.data = data;
     }
 }

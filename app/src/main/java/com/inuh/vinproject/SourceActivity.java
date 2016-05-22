@@ -1,8 +1,5 @@
 package com.inuh.vinproject;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +17,7 @@ import com.inuh.vinproject.api.RestService;
 import com.inuh.vinproject.api.response.SourceResponse;
 import com.inuh.vinproject.model.Source;
 import com.inuh.vinproject.api.requests.SourceRequest;
+import com.inuh.vinproject.util.PrefManager;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -27,7 +25,6 @@ import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.prefs.PreferencesFactory;
 
 
 public class SourceActivity extends AppCompatActivity {
