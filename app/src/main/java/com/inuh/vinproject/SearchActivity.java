@@ -35,9 +35,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Created by artimus on 19.05.16.
- */
+
 public class SearchActivity extends AppCompatActivity {
 
     private ArrayList<Novel> mSearchList;
@@ -92,7 +90,6 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_appbar_menu, menu);
 
-        // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 

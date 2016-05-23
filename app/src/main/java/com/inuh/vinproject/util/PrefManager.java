@@ -22,6 +22,7 @@ public class PrefManager {
     public final static String PREF_FILTER_SORT = "sort";
 
     public final static String PREF_FAVORITE_NOVELS_LIST = "com.inuh.vinproject.pref_manage.favorite_novels_list";
+    public final static String PREF_DOWNLOADED_NOVELS_LIST = "com.inuh.vinptoject.pref_manager.downloaded_novels_list";
 
     private static PrefManager sInstance;
 
@@ -157,5 +158,21 @@ public class PrefManager {
         }
 
         return stringBuilder.toString();
+    }
+
+    public boolean isNovelDownloaded(String novelsId){
+        return PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getStringSet(PREF_DOWNLOADED_NOVELS_LIST, new HashSet<String>()).contains(novelsId);
+    }
+
+    public void setDownloadedNovel(String novelsId){
+        Set<String> favoriteNovels = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getStringSet(PREF_DOWNLOADED_NOVELS_LIST, new HashSet<String>());
+
+        favoriteNovels.add(novelsId);
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putStringSet(PREF_DOWNLOADED_NOVELS_LIST, favoriteNovels)
+                .commit();
     }
 }

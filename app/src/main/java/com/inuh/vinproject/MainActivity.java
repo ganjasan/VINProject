@@ -100,7 +100,9 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_downloaded) {
+            Intent intent = new Intent(MainActivity.this, DownloadActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_manage) {
 

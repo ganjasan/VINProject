@@ -4,6 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -21,7 +25,9 @@ import android.widget.Toast;
 import com.inuh.vinproject.api.RestService;
 import com.inuh.vinproject.api.requests.CatalogRequest;
 import com.inuh.vinproject.api.response.NovelResponse;
+import com.inuh.vinproject.model.LoadNovel;
 import com.inuh.vinproject.model.Novel;
+import com.inuh.vinproject.provider.HelperFactory;
 import com.inuh.vinproject.view.EndlessRecyclerViewScrollListener;
 import com.inuh.vinproject.util.PrefManager;
 import com.octo.android.robospice.SpiceManager;
@@ -30,6 +36,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -128,10 +135,6 @@ public class CatalogFragment extends Fragment {
         }
     };
 
-
-
-
-
     public final class NovelRequestListener implements RequestListener<NovelResponse>{
 
         @Override
@@ -155,6 +158,7 @@ public class CatalogFragment extends Fragment {
         private TextView    mNameTextView;
         private ImageView   mImageView;
         private ImageButton mFavoriteButton;
+        private ImageButton mDownloadButton;
 
         public NovelHolder(View itemView){
             super(itemView);
@@ -168,6 +172,26 @@ public class CatalogFragment extends Fragment {
                 public void onClick(View v) {
                     PrefManager.getInstance(getActivity()).setNovelsFavorite(mNovel.getObjectId());
                     mFavoriteButton.setVisibility(View.INVISIBLE);
+                    mDownloadButton.setVisibility(View.VISIBLE);
+                }
+            });
+
+            mDownloadButton = (ImageButton)itemView.findViewById(R.id.download_button);
+            mDownloadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PrefManager.getInstance(getActivity()).setDownloadedNovel(mNovel.getObjectId());
+                    mDownloadButton.setVisibility(View.INVISIBLE);
+
+                    Intent intent = DownloadService.newIntent(getActivity());
+
+                    intent.putExtra(DownloadService.EXTRA_NOVEL_NAME, mNovel.getName());
+                    intent.putExtra(DownloadService.EXTRA_NOVEL_OBJECTID, mNovel.getObjectId());
+
+                    Bitmap bitmap = ((BitmapDrawable)mImageView.getDrawable()).getBitmap();
+                    intent.putExtra(DownloadService.EXTRA_BITMAP, bitmap);
+                    getActivity().startService(intent);
+
                 }
             });
         }
@@ -180,9 +204,17 @@ public class CatalogFragment extends Fragment {
                     .placeholder(mImageView.getDrawable())
                     .into(mImageView);
 
+            mDownloadButton.setVisibility(View.INVISIBLE);
             mFavoriteButton.setVisibility(View.VISIBLE);
             if(PrefManager.getInstance(getActivity()).isNovelsFavorite(mNovel.getObjectId())){
-                mFavoriteButton.setVisibility(View.INVISIBLE);
+                if (PrefManager.getInstance(getActivity()).isNovelDownloaded(mNovel.getObjectId()))
+                {
+                    mFavoriteButton.setVisibility(View.INVISIBLE);
+                    mDownloadButton.setVisibility(View.INVISIBLE);
+                }else{
+                    mFavoriteButton.setVisibility(View.INVISIBLE);
+                    mDownloadButton.setVisibility(View.VISIBLE);
+                }
             }
         }
 

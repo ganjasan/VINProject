@@ -6,13 +6,14 @@ import com.inuh.vinproject.api.response.NovelResponse;
 import com.inuh.vinproject.provider.TableContracts.TableNovels;
 import com.j256.ormlite.field.DatabaseField;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by artimus on 16.05.16.
  */
-public class Novel {
+public class Novel implements Serializable {
 
     @DatabaseField(generatedId = true)
     private int id;
