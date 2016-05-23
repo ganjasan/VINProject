@@ -159,10 +159,8 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         public void onRequestSuccess(NovelResponse response) {
             totalCount = response.getTotalObjects();
-            //int curSize = mAdapter.getItemCount();
             Collection<Novel> novelsList = response.getData();
             mSearchList.addAll(novelsList);
-            //mAdapter.notifyItemRangeInserted(curSize, mSearchList.size() - 1);
             mAdapter.notifyDataSetChanged();
         }
     }

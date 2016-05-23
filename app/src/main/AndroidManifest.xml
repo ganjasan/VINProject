@@ -52,6 +52,10 @@
 
         </activity>
 
+        <activity android:name=".FavoritesActivity">
+
+        </activity>
+
     </application>
 
 </manifest>

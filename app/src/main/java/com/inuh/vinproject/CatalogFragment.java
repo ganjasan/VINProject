@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -153,6 +154,7 @@ public class CatalogFragment extends Fragment {
         private Novel       mNovel;
         private TextView    mNameTextView;
         private ImageView   mImageView;
+        private ImageButton mFavoriteButton;
 
         public NovelHolder(View itemView){
             super(itemView);
@@ -160,6 +162,14 @@ public class CatalogFragment extends Fragment {
             mNameTextView = (TextView)itemView.findViewById(R.id.novel_name);
             mImageView = (ImageView)itemView.findViewById(R.id.novel_image);
 
+            mFavoriteButton = (ImageButton)itemView.findViewById(R.id.favorite_button);
+            mFavoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PrefManager.getInstance(getActivity()).setNovelsFavorite(mNovel.getObjectId());
+                    mFavoriteButton.setVisibility(View.INVISIBLE);
+                }
+            });
         }
 
         public void bindHolder(Novel novel){
@@ -167,8 +177,13 @@ public class CatalogFragment extends Fragment {
             mNameTextView.setText(novel.getName());
             Picasso.with(getActivity())
                     .load(novel.getImgHref())
-                    .placeholder(android.R.drawable.ic_dialog_info)
+                    .placeholder(mImageView.getDrawable())
                     .into(mImageView);
+
+            mFavoriteButton.setVisibility(View.VISIBLE);
+            if(PrefManager.getInstance(getActivity()).isNovelsFavorite(mNovel.getObjectId())){
+                mFavoriteButton.setVisibility(View.INVISIBLE);
+            }
         }
 
         @Override
@@ -207,7 +222,7 @@ public class CatalogFragment extends Fragment {
     }
 
 
-    private String getWhereClause(){
+    public String getWhereClause(){
 
         String whereClause;
 
@@ -224,7 +239,7 @@ public class CatalogFragment extends Fragment {
         return whereClause;
     }
 
-    private String getSortClause(){
+    public String getSortClause(){
         String sortClause = PrefManager.getInstance(getActivity()).getSortFilter() + " asc";
         return sortClause;
     }

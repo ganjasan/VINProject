@@ -6,6 +6,9 @@ import android.preference.PreferenceManager;
 
 import com.inuh.vinproject.model.Source;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by artimus on 18.05.16.
  */
@@ -17,6 +20,8 @@ public class PrefManager {
 
     public final static String PREF_FILTER_STATUS = "status";
     public final static String PREF_FILTER_SORT = "sort";
+
+    public final static String PREF_FAVORITE_NOVELS_LIST = "com.inuh.vinproject.pref_manage.favorite_novels_list";
 
     private static PrefManager sInstance;
 
@@ -117,5 +122,40 @@ public class PrefManager {
 
     public String getStatusFilter(){
         return PreferenceManager.getDefaultSharedPreferences(mContext).getString(PREF_FILTER_STATUS, "all");
+    }
+
+    public void setNovelsFavorite(String novelsId){
+        Set<String> favoriteNovels = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getStringSet(PREF_FAVORITE_NOVELS_LIST, new HashSet<String>());
+        favoriteNovels.add(novelsId);
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putStringSet(PREF_FAVORITE_NOVELS_LIST, favoriteNovels)
+                .commit();
+    }
+
+    public boolean isNovelsFavorite(String novelsId){
+        return PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getStringSet(PREF_FAVORITE_NOVELS_LIST, new HashSet<String>()).contains(novelsId);
+    }
+
+    public boolean isFavoriteNovelsListEmpty(){
+        return PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getStringSet(PREF_FAVORITE_NOVELS_LIST, new HashSet<String>()).isEmpty();
+    }
+
+    public String getFavoritesNovelsString(){
+        Set<String> favoritesNovels = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getStringSet(PREF_FAVORITE_NOVELS_LIST, new HashSet<String>());
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String novelsId: favoritesNovels) {
+            stringBuilder.append("'" + novelsId +"',");
+        }
+        if(stringBuilder.length() != 0){
+            stringBuilder.deleteCharAt(stringBuilder.length()-1);
+        }
+
+        return stringBuilder.toString();
     }
 }

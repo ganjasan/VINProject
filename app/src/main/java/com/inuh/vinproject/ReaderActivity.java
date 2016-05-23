@@ -138,7 +138,7 @@ public class ReaderActivity extends AppCompatActivity {
             if(mPages.isEmpty() || position < mPages.getFirst().getNumber()-1 || position > mPages.getLast().getNumber()-1){
                 pf = PageFragment.getInstance(mNovelsObjectId, position);
             }else {
-                if (position == mPages.getLast().getNumber() - 6)
+                if (position == mPages.getLast().getNumber() - 6 || position > mPages.getLast().getNumber()-1)
                 {
                     mSpiceManager.execute(new PageRequest(mPages.getLast().getNumber(), mWhereClause),new NextPageRequestListener());
                 }

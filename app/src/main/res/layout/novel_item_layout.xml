@@ -1,25 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+             <!--android:layout_width="match_parent"-->
+             <!--android:layout_height="match_parent">-->
+
+    <!--<TableRow-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal">-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/novel_image"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/novel_name"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toRightOf="@id/novel_image"-->
+            <!--android:textStyle="bold"-->
+            <!--android:paddingLeft="4dp"-->
+            <!--android:paddingTop="16dp"-->
+            <!--android:paddingBottom="16dp"/>-->
+
+
+
+    <!--</TableRow>-->
+
+
+<!--</TableLayout>-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-    
+                android:layout_height="wrap_content"
+                android:paddingBottom="24dp">
+
     <ImageView
         android:id="@+id/novel_image"
         android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="4dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"/>
-    
+        android:layout_centerHorizontal="true"/>
+
+    <ImageButton
+        android:id="@+id/favorite_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@id/novel_image"
+        android:layout_centerHorizontal="true"
+        android:src="@android:drawable/star_big_off"/>
+
     <TextView
         android:id="@+id/novel_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/favorite_button"
         android:layout_toRightOf="@id/novel_image"
         android:textStyle="bold"
-        android:paddingLeft="4dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"/>
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="4dp"/>
 
 </RelativeLayout>
+
+
+  
