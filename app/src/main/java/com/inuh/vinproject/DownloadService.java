@@ -72,7 +72,7 @@ public class DownloadService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
 
-        String novelName = (String) intent.getStringExtra(EXTRA_NOVEL_NAME);
+        mNovelName = (String) intent.getStringExtra(EXTRA_NOVEL_NAME);
         mNovelObjectId = (String) intent.getStringExtra(EXTRA_NOVEL_OBJECTID);
         Bitmap bitmap = (Bitmap) intent.getParcelableExtra(EXTRA_BITMAP);
         mTotalPageCount = intent.getIntExtra(EXTRA_NOVEL_PAGE_TOTAL, 0);
@@ -83,7 +83,7 @@ public class DownloadService extends IntentService {
         mDirectory = cw.getDir(mNovelObjectId, Context.MODE_PRIVATE);
 
         Novel novel = new Novel();
-        novel.setName(novelName);
+        novel.setName(mNovelName);
         novel.setObjectId(mNovelObjectId);
 
         try {
@@ -180,7 +180,7 @@ public class DownloadService extends IntentService {
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder = new NotificationCompat.Builder(getApplicationContext())
                 .setContentText("Novel Download")
-                .setContentTitle("Title")
+                .setContentTitle(mNovelName)
                 .setSmallIcon(android.R.drawable.ic_notification_clear_all);
     }
 }

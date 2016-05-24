@@ -72,7 +72,6 @@ public class SourceActivity extends AppCompatActivity {
 
         @Override
         public void onRequestSuccess(SourceResponse sources) {
-            Toast.makeText(SourceActivity.this, "success", Toast.LENGTH_SHORT).show();
 
             Collection<Source> sourceList = sources.getData();
             mAdapter = new SourceAdapter(sourceList);

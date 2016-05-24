@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 
 import com.inuh.vinproject.api.RestService;
@@ -49,6 +50,8 @@ public class ReaderActivity extends AppCompatActivity {
     private int                 mTotalPageCount;
     private int                 mAdapterOffset;
 
+    private boolean             isFullScreanMode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,8 @@ public class ReaderActivity extends AppCompatActivity {
         mCurrentPageNumber = PrefManager.getInstance(this).getNovelsLastPage(mNovelsObjectId);
         mPages = new LinkedList<>();
         mWhereClause = getWhereClause();
+
+        isFullScreanMode = false;
 
 
         mViewPager = new FixViewPager(this);

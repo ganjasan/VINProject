@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.inuh.vinproject.api.requests.PageRequest;
@@ -53,6 +54,14 @@ public class OfflineReaderActivity extends AppCompatActivity {
         mViewPager = new FixViewPager(this);
         mViewPager.setId(R.id.view_pager);
         mViewPager.setAdapter(new ReaderPageAdapter(getSupportFragmentManager()));
+
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                mCurrentPageNumber = position;
+            }
+        });
 
         setContentView(mViewPager);
     }

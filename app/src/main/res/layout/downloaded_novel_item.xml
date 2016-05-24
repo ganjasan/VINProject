@@ -15,11 +15,24 @@
         android:paddingLeft="8dp"
         android:layout_centerHorizontal="true"/>
 
+
+
+    <ImageButton
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@android:drawable/ic_delete"
+        android:paddingRight="8dp"
+        />
+
     <TextView
         android:id="@+id/load_novel_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/load_novel_image"
+        android:layout_toLeftOf="@id/delete_button"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:paddingLeft="4dp"/>

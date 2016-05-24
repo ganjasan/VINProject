@@ -175,4 +175,21 @@ public class PrefManager {
                 .putStringSet(PREF_DOWNLOADED_NOVELS_LIST, favoriteNovels)
                 .commit();
     }
+
+    public void deleteDownloadedNovle(String novelsId){
+        Set<String> favoriteNovels = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getStringSet(PREF_DOWNLOADED_NOVELS_LIST, new HashSet<String>());
+
+        if (favoriteNovels.contains(novelsId)){
+            favoriteNovels.remove(novelsId);
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putStringSet(PREF_DOWNLOADED_NOVELS_LIST, favoriteNovels)
+                .commit();
+
+        mContext.sendBroadcast(new Intent(PREF_CHANGE_NOTIFICATION));
+
+    }
 }
