@@ -187,6 +187,7 @@ public class CatalogFragment extends Fragment {
 
                     intent.putExtra(DownloadService.EXTRA_NOVEL_NAME, mNovel.getName());
                     intent.putExtra(DownloadService.EXTRA_NOVEL_OBJECTID, mNovel.getObjectId());
+                    intent.putExtra(DownloadService.EXTRA_NOVEL_PAGE_TOTAL, mNovel.getPageTotal());
 
                     Bitmap bitmap = ((BitmapDrawable)mImageView.getDrawable()).getBitmap();
                     intent.putExtra(DownloadService.EXTRA_BITMAP, bitmap);
