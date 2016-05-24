@@ -3,6 +3,8 @@ package com.inuh.vinproject;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -168,11 +171,44 @@ public class SearchActivity extends AppCompatActivity {
         private TextView    mNameTextView;
         private ImageView   mImageView;
 
+        private ImageButton mFavoriteButton;
+        private ImageButton mDownloadButton;
+
         public NovelHolder(View itemView){
             super(itemView);
             itemView.setOnClickListener(this);
             mNameTextView = (TextView)itemView.findViewById(R.id.novel_name);
             mImageView = (ImageView)itemView.findViewById(R.id.novel_image);
+
+            mFavoriteButton = (ImageButton)itemView.findViewById(R.id.favorite_button);
+            mFavoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PrefManager.getInstance(SearchActivity.this).setNovelsFavorite(mNovel.getObjectId());
+                    mFavoriteButton.setVisibility(View.INVISIBLE);
+                    mDownloadButton.setVisibility(View.VISIBLE);
+                }
+            });
+
+            mDownloadButton = (ImageButton)itemView.findViewById(R.id.download_button);
+            mDownloadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PrefManager.getInstance(SearchActivity.this).setDownloadedNovel(mNovel.getObjectId());
+                    mDownloadButton.setVisibility(View.INVISIBLE);
+
+                    Intent intent = DownloadService.newIntent(SearchActivity.this);
+
+                    intent.putExtra(DownloadService.EXTRA_NOVEL_NAME, mNovel.getName());
+                    intent.putExtra(DownloadService.EXTRA_NOVEL_OBJECTID, mNovel.getObjectId());
+                    intent.putExtra(DownloadService.EXTRA_NOVEL_PAGE_TOTAL, mNovel.getPageTotal());
+
+                    Bitmap bitmap = ((BitmapDrawable)mImageView.getDrawable()).getBitmap();
+                    intent.putExtra(DownloadService.EXTRA_BITMAP, bitmap);
+                    startService(intent);
+
+                }
+            });
 
         }
 
@@ -183,6 +219,19 @@ public class SearchActivity extends AppCompatActivity {
                     .load(novel.getImgHref())
                     .placeholder(android.R.drawable.ic_dialog_info)
                     .into(mImageView);
+
+            mDownloadButton.setVisibility(View.INVISIBLE);
+            mFavoriteButton.setVisibility(View.VISIBLE);
+            if(PrefManager.getInstance(SearchActivity.this).isNovelsFavorite(mNovel.getObjectId())){
+                if (PrefManager.getInstance(SearchActivity.this).isNovelDownloaded(mNovel.getObjectId()))
+                {
+                    mFavoriteButton.setVisibility(View.INVISIBLE);
+                    mDownloadButton.setVisibility(View.INVISIBLE);
+                }else{
+                    mFavoriteButton.setVisibility(View.INVISIBLE);
+                    mDownloadButton.setVisibility(View.VISIBLE);
+                }
+            }
         }
 
         @Override

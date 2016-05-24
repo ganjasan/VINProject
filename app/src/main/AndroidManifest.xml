@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
 
-        <activity android:name=".SourceActivity" >
+        <activity android:name=".SourceActivity"
+            android:label="Sources">
 
         </activity>
 
@@ -26,7 +27,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main"
+            android:label="Catalog"
             android:theme="@style/AppTheme.NoActionBar" >
 
             <intent-filter>
@@ -37,7 +38,8 @@
 
         </activity>
 
-        <activity android:name=".SearchActivity">
+        <activity android:name=".SearchActivity"
+            android:label="Search">
             <meta-data android:name="android.app.searchable"
                         android:resource="@xml/searchable" />
 
@@ -48,19 +50,28 @@
 
         </activity>
 
-        <activity android:name=".ReaderActivity">
+        <activity android:name=".ReaderActivity"
+            android:label="Reader">
 
         </activity>
 
-        <activity android:name=".FilterActivity">
+        <activity android:name=".FilterActivity"
+            android:label="Filter">
 
         </activity>
 
-        <activity android:name=".FavoritesActivity">
+        <activity android:name=".FavoritesActivity"
+            android:label="Favorites">
 
         </activity>
 
-        <activity android:name=".DownloadActivity">
+        <activity android:name=".DownloadActivity"
+            android:label="Downloaded">
+
+        </activity>
+
+        <activity android:name=".OfflineReaderActivity"
+            android:label="Reader">
 
         </activity>
 

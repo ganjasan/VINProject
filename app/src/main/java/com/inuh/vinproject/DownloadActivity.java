@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.inuh.vinproject.model.LoadNovel;
 import com.inuh.vinproject.model.Novel;
@@ -53,7 +54,7 @@ public class DownloadActivity extends AppCompatActivity {
         try {
             loadNovels = (ArrayList)HelperFactory.getHelper().getNovelDAO().getAllLoadNovels();
         }catch (SQLException sqlex){
-            //TODO сообзить об ощибке
+            Toast.makeText(this,"data base error", Toast.LENGTH_SHORT);
         }
         return loadNovels;
     }
@@ -81,7 +82,9 @@ public class DownloadActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            //запустить LoadReader
+            Intent intent = new Intent(DownloadActivity.this, OfflineReaderActivity.class);
+            intent.putExtra(OfflineReaderActivity.EXTRA_NOVEL_OBJECTID, mNovel.getObjectId());
+            startActivity(intent);
         }
     }
 
